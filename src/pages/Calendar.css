@@ -1,0 +1,12 @@
+
+.calendar-page {
+    height: calc(100vh - 50px);
+}
+
+.calendar-container {
+    background: rgb(239, 235, 235);
+}
+
+.tasks-container {
+    background: rgb(171, 208, 235)
+}
