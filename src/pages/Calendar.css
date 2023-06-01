@@ -10,3 +10,21 @@
 .tasks-container {
     background: rgb(171, 208, 235)
 }
+
+.task {
+    border: 1.5px solid #888;
+    background: #cadee5;
+    border-radius: 5px;
+    list-style-type: none;
+    padding: 5px 10px;
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: 90% 10%;
+    overflow-wrap: break-word;
+}
+
+.edit:hover, 
+.delete:hover {
+    rotate: 15deg;
+    cursor: pointer;
+}
