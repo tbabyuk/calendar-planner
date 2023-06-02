@@ -3,17 +3,18 @@
     height: calc(100vh - 50px);
 }
 
-.calendar-container {
+/* .calendar-container {
     background: rgb(239, 235, 235);
-}
+} */
 
-.tasks-container {
+/* .tasks-container {
     background: rgb(171, 208, 235)
-}
+} */
 
 .task {
     border: 1.5px solid #888;
-    background: #cadee5;
+    background: #eee;
+    width: 80%;
     border-radius: 5px;
     list-style-type: none;
     padding: 5px 10px;
@@ -27,4 +28,31 @@
 .delete:hover {
     rotate: 15deg;
     cursor: pointer;
+}
+
+.tasks-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0 30px 0;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #bebebe;
+}
+
+.selected-message {
+    font-size: 1.4rem;
+}
+
+.add-task-btn {
+    background: #30a1bb;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    color: whitesmoke;
+    height: 40px;
+}
+
+.add-task-btn:disabled {
+    background: rgb(225, 219, 219);
 }
