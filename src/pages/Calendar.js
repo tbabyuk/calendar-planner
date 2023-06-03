@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { db } from "../firebase/config";
 
 // firebase imports
-import { getDocs, collection } from "firebase/firestore";
+import { doc, getDocs, collection, updateDoc, deleteField, onSnapshot } from "firebase/firestore";
 
 // import modals
 import EditTaskModal from "../components/modals/EditTaskModal";
@@ -22,12 +22,13 @@ const colRef = collection(db, "tasks");
 
 
 export const Calendar = () => {
-    const [selectedDay, setSelectedDay] = useState();
-    const [selectedDayDetails, setSelectedDayDetails] = useState({})
+    const [selectedDate, setSelectedDate] = useState();
+    const [selectedDateDetails, setSelectedDateDetails] = useState({})
     const [bookedDays, setBookedDays] = useState([])
     const [currentTasks, setCurrentTasks] = useState([])
     const [targetId, setTargetId] = useState("")
     const [editTaskModalIsOpen, setEditTaskModalIsOpen] = useState(false)
+    const [addTaskModalIsOpen, setAddTaskModalIsOpen] = useState(false)
 
 
     // tasks by month
@@ -61,10 +62,8 @@ export const Calendar = () => {
     const handleSelectedDate = (day) => {
         const monthArray = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-        console.log("logging currentDate", day)
-
-        setSelectedDay(day)
-        setSelectedDayDetails({
+        setSelectedDate(format(day, "PP"))
+        setSelectedDateDetails({
           selectedDay: day.getDate(),
           selectedMonth: monthArray[day.getMonth()].toLowerCase(),
           selectedYear: day.getYear()
@@ -73,39 +72,60 @@ export const Calendar = () => {
     }
 
     let footer = <p>Please pick a day.</p>;
-    if (selectedDay) {
-      footer = <p>You picked {format(selectedDay, 'PP')}.</p>;
+    if (selectedDate) {
+      footer = <p>You picked {selectedDate}.</p>;
     }
 
     const bookedStyle = {border: "2px solid orange"}
     const selectedStyle = {background: "orange"}
 
 
-    const handleEdit = (index) => {
-      console.log("you want to edit a task")
-      setTargetId(index)
-      setEditTaskModalIsOpen(true)
-    }
+
 
     const closeEditTaskModal = () => {
       setEditTaskModalIsOpen(false)
     }
 
-    const handleDelete = () => {
-      console.log("you want to delete a task")
+    const closeAddTaskModal = () => {
+      setAddTaskModalIsOpen(false)
     }
+
+    const handleAdd = () => {
+      setAddTaskModalIsOpen(true)
+    }
+
+    const handleEdit = (index) => {
+      setTargetId(index)
+      setEditTaskModalIsOpen(true)
+    }
+
+    const handleDelete = async (index) => {
+
+      const docRef = doc(db, "tasks", selectedDateDetails.selectedMonth);
+    
+      try {
+          await updateDoc(docRef, {
+            [`${selectedDateDetails.selectedDay}.${index + 1}`]: deleteField()  
+          })
+    
+        } catch(err) {
+          console.log(err.message)
+        }    }
 
 
     // STEP 1: on initial render, get document data for each month and update the corresponding state with data
 
     useEffect(() => {
 
-    console.log("component has loaded", db)
 
+    // getDocs(colRef)
+    //   .then((snapshot) => {
+    //     snapshot.docs.forEach((doc) => {
+      onSnapshot(colRef, snapshot => {
 
-    getDocs(colRef)
-      .then((snapshot) => {
-        snapshot.docs.forEach((doc) => {
+        console.log("snapshot fired")
+        snapshot.forEach(doc => {
+
           switch(doc.id) {
             case "june":
               setJuneTasks(doc.data())
@@ -135,7 +155,6 @@ export const Calendar = () => {
         })
       })
 
-
   }, [])
 
 
@@ -148,7 +167,6 @@ export const Calendar = () => {
       const juneKeys = Object.keys(juneTasks)
       juneKeys.forEach((key) => {
         if(juneTasks[key][1]) {
-          console.log(juneTasks[key][1])
           juneDaysWithTasks.push(new Date(`2023, 6, ${key}`))
         }
       })
@@ -219,42 +237,45 @@ export const Calendar = () => {
 
     useEffect(() => {
       
-      switch(selectedDayDetails.selectedMonth) {
+      switch(selectedDateDetails.selectedMonth) {
         case "june":
-          const juneDayTasksArray = Object.values(juneTasks[selectedDayDetails.selectedDay])
+          const juneDayTasksArray = Object.values(juneTasks[selectedDateDetails.selectedDay])
           setCurrentTasks(juneDayTasksArray)
         break;
         case "july":
-          const julyDayTasksArray = Object.values(julyTasks[selectedDayDetails.selectedDay])
+          const julyDayTasksArray = Object.values(julyTasks[selectedDateDetails.selectedDay])
           setCurrentTasks(julyDayTasksArray)
         break;
         case "august":
-          const augustDayTasksArray = Object.values(augustTasks[selectedDayDetails.selectedDay])
+          const augustDayTasksArray = Object.values(augustTasks[selectedDateDetails.selectedDay])
           setCurrentTasks(augustDayTasksArray)        
           break;
         case "september":
-          const septemberDayTasksArray = Object.values(septemberTasks[selectedDayDetails.selectedDay])
+          const septemberDayTasksArray = Object.values(septemberTasks[selectedDateDetails.selectedDay])
           setCurrentTasks(septemberDayTasksArray)        
           break;
         case "october":
-          const octoberDayTasksArray = Object.values(octoberTasks[selectedDayDetails.selectedDay])
+          const octoberDayTasksArray = Object.values(octoberTasks[selectedDateDetails.selectedDay])
           setCurrentTasks(octoberDayTasksArray)        
           break;
         case "november":
-          const novemberDayTasksArray = Object.values(novemberTasks[selectedDayDetails.selectedDay])
+          const novemberDayTasksArray = Object.values(novemberTasks[selectedDateDetails.selectedDay])
           setCurrentTasks(novemberDayTasksArray)        
           break;
         case "december":
-          const decemberDayTasksArray = Object.values(decemberTasks[selectedDayDetails.selectedDay])
+          const decemberDayTasksArray = Object.values(decemberTasks[selectedDateDetails.selectedDay])
           setCurrentTasks(decemberDayTasksArray)        
           break;
         default:
         break;
       }
 
-    }, [selectedDay])
+    }, [selectedDate])
   
+    // useEffect(() => {
 
+    //   console.log("current tasks updated", currentTasks[0].length)
+    // }, [currentTasks])
 
 
 
@@ -264,7 +285,7 @@ export const Calendar = () => {
             <div className="calendar-container col d-flex justify-content-center py-5">
                 <DayPicker
                       mode="single"
-                      selected={selectedDay}
+                      selected={selectedDate}
                       modifiers={{booked: bookedDays}}
                       modifiersStyles={{booked: bookedStyle, selected: selectedStyle}}
                       onDayClick={handleSelectedDate}
@@ -275,7 +296,7 @@ export const Calendar = () => {
             <div className="tasks-container col py-5 px-4">
             <div className="tasks-header">
             <div className="selected-message">{footer}</div>
-              <button className="add-task-btn" disabled={!selectedDay}>Add a new task for this day</button>
+              <button className="add-task-btn" disabled={!selectedDate} onClick={handleAdd}>Add a new task for this day</button>
             </div>
                 {/* <p className="text-center">{footer}</p> */}
 
@@ -284,7 +305,7 @@ export const Calendar = () => {
                 currentTasks.map((task, index) => (
                 <li key={index} className="task">
                     <span>{task}</span>
-                    <span className="d-flex justify-content-between align-items-center"><i className="far fa-edit edit" onClick={() => handleEdit(index)}></i><i className="far fa-trash-alt delete" onClick={handleDelete}></i></span>
+                    <span className="d-flex justify-content-between align-items-center"><i className="far fa-edit edit" onClick={() => handleEdit(index)}></i><i className="far fa-trash-alt delete" onClick={() => handleDelete(index)}></i></span>
                 </li>
                 ))
                 ) : ("no tasks to show for this day")}
@@ -294,8 +315,14 @@ export const Calendar = () => {
 
 
         {editTaskModalIsOpen &&
-         <EditTaskModal closeEditTaskModal={closeEditTaskModal} currentTask={currentTasks[targetId]} currentTasks={currentTasks} day={selectedDayDetails.selectedDay} month={selectedDayDetails.selectedMonth}/>
+          <EditTaskModal closeEditTaskModal={closeEditTaskModal} currentTask={currentTasks[targetId]} currentTasks={currentTasks} taskKey={targetId + 1} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay}/>
         }
+
+        {addTaskModalIsOpen && 
+         <AddTaskModal currentDate={selectedDate} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay} closeAddTaskModal={closeAddTaskModal} numberOfCurrentTasks={currentTasks[0].length ? currentTasks.length : 0} />
+        }
+
+
 
     </div>
   )

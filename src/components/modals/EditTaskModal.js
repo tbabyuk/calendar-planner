@@ -5,9 +5,7 @@ import { collection, onSnapshot, doc, getDoc, getDocs, updateDoc, arrayUnion, se
 import { useState, useEffect, useRef } from "react"
 import { db } from "../../firebase/config";
 
-function EditTaskModal({closeEditTaskModal, currentTask, day, month, currentTasks}) {
-
-  console.log("showing current tasks from EditTaskModal", currentTasks)
+function EditTaskModal({closeEditTaskModal, currentTask, day, month, currentTasks, taskKey}) {
 
   const inputRef = useRef()
   const [isBeingEdited, setIsBeingEdited] = useState(false)
@@ -29,12 +27,11 @@ function EditTaskModal({closeEditTaskModal, currentTask, day, month, currentTask
 
   const handleSaveTask = async () => {
 
-    console.log("current tasks are:", currentTasks)
     const docRef = doc(db, "tasks", month);
 
     try {
       await updateDoc(docRef, {
-        [day]: arrayUnion(...currentTasks, newTask)
+        [`${day}.${taskKey}`]: newTask
       })
 
     } catch(err) {
@@ -46,11 +43,11 @@ function EditTaskModal({closeEditTaskModal, currentTask, day, month, currentTask
     // })
     // .then(() => console.log("doc updated"))
     
-    setIsBeingEdited(false)
     setSaveMessage("New Task Saved!")
     setTimeout(() => {
       closeEditTaskModal()
-    }, 2000)
+      setIsBeingEdited(false)
+    }, 1000)
   }
  
 
