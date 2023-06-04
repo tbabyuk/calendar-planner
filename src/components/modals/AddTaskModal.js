@@ -2,7 +2,7 @@
 import "./TaskModal.css"
 
 import { doc, updateDoc } from "firebase/firestore";
-import { useState, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { db } from "../../firebase/config";
 
 
@@ -39,6 +39,11 @@ function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTa
     }, 1000)
 
   }
+
+  // set cursor to beginning of text field when component renders
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
  
 
   return (

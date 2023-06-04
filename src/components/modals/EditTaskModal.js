@@ -1,7 +1,7 @@
 // import styles
 import styles from "./TaskModal.css"
 
-import { collection, onSnapshot, doc, getDoc, getDocs, updateDoc, arrayUnion, setDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react"
 import { db } from "../../firebase/config";
 
@@ -14,7 +14,6 @@ function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEdit
 
 
   const toggleEdit = () => {
-    inputRef.current.focus()
     setIsBeingEdited(true)
   }
 
@@ -48,9 +47,13 @@ function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEdit
       setIsBeingEdited(false)
     }, 1000)
   }
+
+  useEffect(() => {
+    inputRef.current.selectionStart = currentTask.length;
+    inputRef.current.selectionEnd = currentTask.length;
+    inputRef.current.focus()
+  }, [isBeingEdited])
  
-
-
 
   return (
     <div className="day-modal-overlay" id="day-modal" onClick={(e) => handleCloseModal(e)}>

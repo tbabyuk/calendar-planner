@@ -266,11 +266,6 @@ export const Calendar = () => {
       }
 
     }, [selectedDate, juneTasks])
-  
-    // useEffect(() => {
-
-    //   console.log("current tasks updated", currentTasks[0].length)
-    // }, [currentTasks])
 
 
 
