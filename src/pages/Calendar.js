@@ -79,9 +79,6 @@ export const Calendar = () => {
     const bookedStyle = {border: "2px solid orange"}
     const selectedStyle = {background: "orange"}
 
-
-
-
     const closeEditTaskModal = () => {
       setEditTaskModalIsOpen(false)
     }
@@ -113,15 +110,11 @@ export const Calendar = () => {
         }    }
 
 
-    // STEP 1: on initial render, get document data for each month and update the corresponding state with data
+    // STEP 1: on initial render and on every change to the collection thereafter, get document data for each month and update the corresponding state
 
     useEffect(() => {
 
-
-    // getDocs(colRef)
-    //   .then((snapshot) => {
-    //     snapshot.docs.forEach((doc) => {
-      onSnapshot(colRef, snapshot => {
+      const unsubscribe = onSnapshot(colRef, snapshot => {
 
         console.log("snapshot fired")
         snapshot.forEach(doc => {
@@ -154,8 +147,10 @@ export const Calendar = () => {
           }
         })
       })
-
-  }, [])
+          return () => {
+            unsubscribe();
+          };  
+    }, [])
 
 
     // STEP 2: once firestore data is populated to the state, filter all days for each month to figure out which days have tasks assigned to them, and put all these days into an array, which is to be used to visually highlight these days in the calendar
@@ -270,7 +265,7 @@ export const Calendar = () => {
         break;
       }
 
-    }, [selectedDate])
+    }, [selectedDate, juneTasks])
   
     // useEffect(() => {
 
@@ -315,11 +310,11 @@ export const Calendar = () => {
 
 
         {editTaskModalIsOpen &&
-          <EditTaskModal closeEditTaskModal={closeEditTaskModal} currentTask={currentTasks[targetId]} currentTasks={currentTasks} taskKey={targetId + 1} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay}/>
+          <EditTaskModal currentDate={selectedDate} currentTask={currentTasks[targetId]} taskKey={targetId + 1} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay} closeEditTaskModal={closeEditTaskModal}/>
         }
 
         {addTaskModalIsOpen && 
-         <AddTaskModal currentDate={selectedDate} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay} closeAddTaskModal={closeAddTaskModal} numberOfCurrentTasks={currentTasks[0].length ? currentTasks.length : 0} />
+         <AddTaskModal currentDate={selectedDate} numberOfCurrentTasks={currentTasks[0].length ? currentTasks.length : 0} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay} closeAddTaskModal={closeAddTaskModal} />
         }
 
 

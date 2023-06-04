@@ -5,7 +5,7 @@ import { collection, onSnapshot, doc, getDoc, getDocs, updateDoc, arrayUnion, se
 import { useState, useEffect, useRef } from "react"
 import { db } from "../../firebase/config";
 
-function EditTaskModal({closeEditTaskModal, currentTask, day, month, currentTasks, taskKey}) {
+function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEditTaskModal}) {
 
   const inputRef = useRef()
   const [isBeingEdited, setIsBeingEdited] = useState(false)
@@ -16,7 +16,6 @@ function EditTaskModal({closeEditTaskModal, currentTask, day, month, currentTask
   const toggleEdit = () => {
     inputRef.current.focus()
     setIsBeingEdited(true)
-    // setNewTask(currentTasks)
   }
 
   const handleCloseModal = (e) => {
@@ -57,7 +56,7 @@ function EditTaskModal({closeEditTaskModal, currentTask, day, month, currentTask
     <div className="day-modal-overlay" id="day-modal" onClick={(e) => handleCloseModal(e)}>
       <div className="day-modal-container">
         <button className="modal-btn" onClick={toggleEdit}>Edit Task</button>
-        <small className="text-center">Editing task for <strong>temp</strong></small>
+        <small className="text-center">Editing task for <strong>{currentDate}</strong></small>
         <textarea type="text" value={isBeingEdited ? newTask : currentTask} onChange={e => setNewTask(e.target.value)} disabled={!isBeingEdited} ref={inputRef} />
         <button className="modal-btn" disabled={!isBeingEdited} onClick={handleSaveTask}>{saveMessage}</button>
       </div>

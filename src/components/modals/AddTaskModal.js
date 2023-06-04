@@ -6,7 +6,7 @@ import { useState, useRef } from "react"
 import { db } from "../../firebase/config";
 
 
-function AddTaskModal({currentDate, month, day, closeAddTaskModal, numberOfCurrentTasks}) {
+function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTaskModal}) {
 
   const inputRef = useRef()
   const [newTask, setNewTask] = useState("")
