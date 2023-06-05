@@ -3,9 +3,14 @@
 .navbar {
     background-color: #c45429;
     height: 50px;
-    padding-left: 20px;
+    padding: 0 20px;
+    color: white;
 }
 
 .navbar img {
-    width: 130px;
+    width: 120px;
+}
+
+.title {
+    font-size: 1.4rem;
 }

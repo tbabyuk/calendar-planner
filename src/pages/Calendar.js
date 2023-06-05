@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { db } from "../firebase/config";
 
 // firebase imports
-import { doc, getDocs, collection, updateDoc, deleteField, onSnapshot } from "firebase/firestore";
+import { doc, collection, updateDoc, deleteField, onSnapshot } from "firebase/firestore";
 
 // import modals
 import EditTaskModal from "../components/modals/EditTaskModal";
@@ -227,7 +227,6 @@ export const Calendar = () => {
     
 
 
-
     // STEP 3: depending on which day of a month the user selects, pull up all the tasks for that particular day and put them into an array, which will be mapped through in the UI
 
     useEffect(() => {
@@ -270,9 +269,12 @@ export const Calendar = () => {
 
 
   return (
-    <div className="container calendar-page mt-5"> 
+    <div className="container calendar-page">
+
         <div className="row">
-            <div className="calendar-container col d-flex justify-content-center py-5">
+
+            {/* calendar container */}
+            <div className="calendar-container col-12 col-md-6 d-flex justify-content-center">
                 <DayPicker
                       mode="single"
                       selected={selectedDate}
@@ -283,24 +285,28 @@ export const Calendar = () => {
                       toYear={2023}
                 />
             </div>
-            <div className="tasks-container col py-5 px-4">
-            <div className="tasks-header">
-            <div className="selected-message">{footer}</div>
-              <button className="add-task-btn" disabled={!selectedDate} onClick={handleAdd}>Add a new task for this day</button>
-            </div>
-                {/* <p className="text-center">{footer}</p> */}
 
-                {currentTasks[0]?.length ? (
-        
-                currentTasks.map((task, index) => (
-                <li key={index} className="task">
-                    <span>{task}</span>
-                    <span className="d-flex justify-content-between align-items-center"><i className="far fa-edit edit" onClick={() => handleEdit(index)}></i><i className="far fa-trash-alt delete" onClick={() => handleDelete(index)}></i></span>
-                </li>
-                ))
-                ) : ("no tasks to show for this day")}
+            {/* tasks container */}
+            <div className="tasks-container col-12 col-md-6 px-4 pt-5 pt-md-0">
+                <div className="tasks-header d-flex flex-column flex-xl-row justify-content-evenly align-items-center pb-4 mb-4">
+                    <div className="selected-message">{footer}</div>
+                    <button className="add-task-btn" disabled={!selectedDate} onClick={handleAdd}>Add new task for this day</button>
+                </div>
+                <div className="tasks-list">
+
+                    {currentTasks[0]?.length ? (
+            
+                    currentTasks.map((task, index) => (
+                    <li key={index} className="task">
+                        <span>{task}</span>
+                        <span className="d-flex justify-content-between align-items-center"><i className="far fa-edit edit" onClick={() => handleEdit(index)}></i><i className="far fa-trash-alt delete ms-2" onClick={() => handleDelete(index)}></i></span>
+                    </li>
+                    ))
+                    ) : ("no tasks to show for this day")}
+                  </div>
 
             </div>
+
         </div>
 
 
@@ -311,8 +317,6 @@ export const Calendar = () => {
         {addTaskModalIsOpen && 
          <AddTaskModal currentDate={selectedDate} numberOfCurrentTasks={currentTasks[0].length ? currentTasks.length : 0} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay} closeAddTaskModal={closeAddTaskModal} />
         }
-
-
 
     </div>
   )

@@ -8,8 +8,8 @@
     background: rgba(0, 0, 0, 0.6);
     display: grid;
     place-items: center;
+    z-index: 100;
 }
-
 
 .day-modal-container {
     width: 400px;
@@ -27,7 +27,7 @@
     width: 100%;
     height: 35px;
     border: none;
-    background: green;
+    background: #2b92a9;
     color: #f3f3f3;
 }
 
