@@ -315,7 +315,7 @@ export const Calendar = () => {
         }
 
         {addTaskModalIsOpen && 
-         <AddTaskModal currentDate={selectedDate} numberOfCurrentTasks={currentTasks[0].length ? currentTasks.length : 0} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay} closeAddTaskModal={closeAddTaskModal} />
+         <AddTaskModal currentDate={selectedDate} numberOfCurrentTasks={currentTasks[0]?.length ? currentTasks.length : 0} month={selectedDateDetails.selectedMonth} day={selectedDateDetails.selectedDay} closeAddTaskModal={closeAddTaskModal} />
         }
 
     </div>
