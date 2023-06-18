@@ -1,70 +1,41 @@
-# Getting Started with Create React App
+# Github Finder
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+See it live: [Calendar Planner](https://benevolent-empanada-0ff1cf.netlify.app/)
 
-## Available Scripts
+## Description
+A small web-app that allows users to keep track of their monthly tasks/goals by entering them into a calendar. Users can also edit and delete these tasks as they please.  
 
-In the project directory, you can run:
+## Background & Motivation
+This app was intended to help the administrator of a music school business keep track of various tasks/due dates for the business without the use of spreadsheets. For this reason, it has a very practical, real-life application.
 
-### `npm start`
+## Technologies
+The current version of this project was done with:
+* HTML
+* Bootstrap and vanilla CSS
+* React
+* Firebase Firestore
+* React-Day-Picker
+* React-Toastify
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## State of Completion
+Completed and working. The one issue that I have not yet solved is the compatibility of react-day-picker with IOS. For some reason, the selected dates do now show as circled in IOS operating systems. This is something I will keep working to resolve.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Learning Lessons & Challenges
+### Using react-day-picker
+This was my very first experience working with this date-picker component. I had to rely to the documentation to get the features that I required to work, such as limiting the calendar to just one year, showing only one month at a time, highlighting only specific dates, and displaying the selected date in the UI.
 
-### `npm test`
+### Working with Firestore
+Although I was not brand new to Firestore by this point, this project gave me an opportunity to continue to hone my skills. I got a nice refresher on how to get, edit, and delete document data, as well as to display it in a specific order using a Firestore query.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Displaying Firestore data
+I stored all task data in a Firestore collection called "tasks", where the id of each document represented a particular month. Each month contained an object that represented the day of a month, and each day in turn contained all (if any) tasks for that day. After fetching all the data for each day of the month, I had to figure out how to first check which of those days contained tasks and highlight only those days in the calendar. Then, depending on what day the user clicked, I had to display any tasks for that day in the UI. All this was a challenge which was fun to figure out. 
 
-### `npm run build`
+### Working with React Toastify
+I had heard about react-toastify, but had never used it prior to this project, and was happy to get a chance to learn it. I love how easy it is to set up and how customizable it can be. Great library!
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Summary
+I am pretty pleased with how this app turned out, although I think some of the logic could probably be made a bit more concise, which I will continue to try to implement with small improvements here and there. Also, as mentioned earlier, the calendar highlights do not seem to show on IOS devices for some reason. I tried looking for help on google to no avail, so this is something I need to still figure out. Other than this, this app is in perfect working order at the moment and is being used by the administrator at the music school business. Although here it appears as its own app, it actually forms just one of several features incorporated into an app that is used by the administrator.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

@@ -23,10 +23,10 @@ export const useFirestore = () => {
       const docRef = doc(db, "tasks", month);
       try {
           await updateDoc(docRef, {
-          [`${day}.${numberOfCurrentTasks + 1}`]: newTask
+            [`${day}.${numberOfCurrentTasks + 1}`]: newTask
           })
           notifySuccess("task successfully added!")
-          } catch(err) {
+      } catch(err) {
           notifyError(err.message)
           console.log(err.message)
         }
@@ -38,10 +38,10 @@ export const useFirestore = () => {
       const docRef = doc(db, "tasks", selectedDateDetails.selectedMonth);
       try {
           await updateDoc(docRef, {
-              [`${selectedDateDetails.selectedDay}.${index + 1}`]: deleteField() 
+            [`${selectedDateDetails.selectedDay}.${index + 1}`]: deleteField() 
           })
           notifySuccess("task successfully deleted!")
-          } catch(err) {
+      } catch(err) {
           notifyError(err.message)
           console.log(err.message)
         }    
@@ -56,7 +56,7 @@ export const useFirestore = () => {
             [`${day}.${taskKey}`]: newTask
           })
           notifySuccess("task successfully updated!") 
-        } catch(err) {
+      } catch(err) {
           notifyError(err.message)
           console.log(err.message)
       }
