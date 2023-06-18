@@ -1,30 +1,44 @@
 // styles
 import "./Calendar.css"
 
-// day picker imports
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import format from "date-fns/format";
 
-// modals imports
 import EditTaskModal from "../components/EditTaskModal";
 import AddTaskModal from "../components/AddTaskModal";
 
-// firebase imports
-import { doc, collection, updateDoc, deleteField, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
+import { useFirestore } from "../hooks/useFirestore";
 
-// other imports
 import { useState, useEffect } from "react";
 import { db } from "../firebase/config";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
 const colRef = collection(db, "tasks");
+
+const notifyError = (msg) => {
+  toast.error(msg)
+}
+
+const notifySuccess = (msg) => {
+  toast.success(msg)
+}
+
+const handleOnline = () => {
+  notifySuccess("You're back online!")
+}
+
+const handleOffline = () => {
+  notifyError("Your internet appears to be offline, please check connection!")
+}
 
 
 export const Calendar = () => {
+
+    const {handleDeleteTask, notifySuccess} = useFirestore()
 
     const [selectedDate, setSelectedDate] = useState();
     const [selectedDateDetails, setSelectedDateDetails] = useState({})
@@ -49,22 +63,6 @@ export const Calendar = () => {
     const [novemberDays, setNovemberDays] = useState({})
     const [decemberDays, setDecemberDays] = useState({})
 
-
-    const notifyError = (msg) => {
-      toast.error(msg)
-    }
-
-    const notifySuccess = (msg) => {
-      toast.success(msg)
-    }
-
-    const handleOnline = () => {
-      notifySuccess("You're back online!")
-    }
-
-    const handleOffline = () => {
-      notifyError("Your internet appears to be offline, please check connection!")
-    }
 
 
     // display selected date
@@ -92,23 +90,6 @@ export const Calendar = () => {
       setTargetId(index)
       setEditTaskModalIsOpen(true)
     }
-
-    // delete task
-    const handleDelete = async (index) => {
-      const docRef = doc(db, "tasks", selectedDateDetails.selectedMonth);
-    
-      try {
-          await updateDoc(docRef, {
-            [`${selectedDateDetails.selectedDay}.${index + 1}`]: deleteField() 
-          })
-          notifySuccess("task successfully deleted!")
-    
-        } catch(err) {
-          notifyError(err.message)
-          console.log(err.message)
-        }    
-    }
-
 
     const handleSelectedDate = (day) => {
 
@@ -402,13 +383,6 @@ export const Calendar = () => {
                         position="top-center"
                         autoClose={2000}
                         hideProgressBar={true}
-                        // newestOnTop={false}
-                        // closeOnClick
-                        // rtl={false}
-                        // pauseOnFocusLoss
-                        // draggable
-                        // pauseOnHover
-                        // theme="light"
                     />                    
                 </div>
                 <div className="tasks-list">
@@ -418,7 +392,7 @@ export const Calendar = () => {
                     currentTasks.map((task, index) => (
                     <li key={index} className="task">
                         <span>{task}</span>
-                        <span className="d-flex justify-content-between align-items-center"><i className="far fa-edit edit" onClick={() => handleEdit(index)}></i><i className="far fa-trash-alt delete ms-2" onClick={() => handleDelete(index)}></i></span>
+                        <span className="d-flex justify-content-between align-items-center"><i className="far fa-edit edit" onClick={() => handleEdit(index)}></i><i className="far fa-trash-alt delete ms-2" onClick={() => handleDeleteTask(selectedDateDetails, index)}></i></span>
                     </li>
                     ))
                     ) : ("no tasks to show for this day")}

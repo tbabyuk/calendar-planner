@@ -1,17 +1,15 @@
 // import styles
 import "./TaskModal.css"
 
-import { doc, updateDoc } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react"
-import { db } from "../firebase/config";
+import { useFirestore } from "../hooks/useFirestore";
 
 
-function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTaskModal, notifySuccess, notifyError}) {
+function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTaskModal}) {
 
   const inputRef = useRef()
   const [newTask, setNewTask] = useState("")
-  // const [saveMessage, setSaveMessage] = useState("Save Task")
-
+  const {handleAddTask} = useFirestore()
 
   const handleCloseModal = (e) => {
     if(e.target.id === "day-modal") {
@@ -19,25 +17,12 @@ function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTa
     }
   }
 
-  // add task
-  const handleSaveTask = async () => {
-    const docRef = doc(db, "tasks", month);
-
-    try {
-      await updateDoc(docRef, {
-        [`${day}.${numberOfCurrentTasks + 1}`]: newTask
-      })
-      notifySuccess("task successfully added!")
-
-    } catch(err) {
-      notifyError(err.message)
-      console.log(err.message)
-    }
-    
+  // add a new task
+  const handleAdd = () => {
+    handleAddTask(numberOfCurrentTasks, month, day, newTask)
     setTimeout(() => {
       closeAddTaskModal()
     }, 500)
-
   }
 
   // set cursor to beginning of text field when component renders
@@ -51,7 +36,7 @@ function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTa
       <div className="day-modal-container">
         <small className="text-center">Adding task for <strong>{currentDate}</strong></small>
         <textarea type="text" value={newTask} onChange={e => setNewTask(e.target.value)} ref={inputRef} />
-        <button className="modal-btn" onClick={handleSaveTask}>Save Task</button>
+        <button className="modal-btn" onClick={handleAdd}>Save Task</button>
       </div>
     </div>
   )

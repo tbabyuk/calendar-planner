@@ -1,16 +1,16 @@
 // import styles
-import styles from "./TaskModal.css"
+import "./TaskModal.css"
 
-import { doc, updateDoc } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react"
-import { db } from "../firebase/config";
+import { useFirestore } from "../hooks/useFirestore"
 
-function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEditTaskModal, notifySuccess, notifyError}) {
+
+function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEditTaskModal}) {
 
   const inputRef = useRef()
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [newTask, setNewTask] = useState(currentTask)
-
+  const {handleEditTask} = useFirestore()
 
   const toggleEdit = () => {
     setIsBeingEdited(true)
@@ -22,21 +22,9 @@ function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEdit
     }
   }
 
-  const handleSaveTask = async () => {
-
-    const docRef = doc(db, "tasks", month);
-
-    try {
-      await updateDoc(docRef, {
-        [`${day}.${taskKey}`]: newTask
-      })
-      notifySuccess("task successfully updated!")
-
-    } catch(err) {
-      notifyError(err.message)
-      console.log(err.message)
-    }
-    
+  // edit existing task
+  const handleEdit = async () => {
+    handleEditTask(month, day, taskKey, newTask)    
     setTimeout(() => {
       closeEditTaskModal()
       setIsBeingEdited(false)
@@ -56,7 +44,7 @@ function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEdit
         <button className="modal-btn" onClick={toggleEdit}>Edit Task</button>
         <small className="text-center">Editing task for <strong>{currentDate}</strong></small>
         <textarea type="text" value={isBeingEdited ? newTask : currentTask} onChange={e => setNewTask(e.target.value)} disabled={!isBeingEdited} ref={inputRef} />
-        <button className="modal-btn" disabled={!isBeingEdited} onClick={handleSaveTask}>Save Task</button>
+        <button className="modal-btn" disabled={!isBeingEdited} onClick={handleEdit}>Save Task</button>
       </div>
     </div>
   )
