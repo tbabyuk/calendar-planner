@@ -18,40 +18,40 @@ const notifyError = (msg) => {
 export const useFirestore = () => {
 
 
-    // ADD A NEW TASK
+    // ADD NEW TASK
     const handleAddTask = async (numberOfCurrentTasks, month, day, newTask) => {
-        const docRef = doc(db, "tasks", month);
-        try {
-            await updateDoc(docRef, {
-            [`${day}.${numberOfCurrentTasks + 1}`]: newTask
-            })
-            notifySuccess("task successfully added!")
-        } catch(err) {
-            notifyError(err.message)
-            console.log(err.message)
+      const docRef = doc(db, "tasks", month);
+      try {
+          await updateDoc(docRef, {
+          [`${day}.${numberOfCurrentTasks + 1}`]: newTask
+          })
+          notifySuccess("task successfully added!")
+          } catch(err) {
+          notifyError(err.message)
+          console.log(err.message)
         }
     }
 
 
     // DELETE EXISTING TASK
     const handleDeleteTask = async (selectedDateDetails, index) => {
-    const docRef = doc(db, "tasks", selectedDateDetails.selectedMonth);
-    try {
-        await updateDoc(docRef, {
-            [`${selectedDateDetails.selectedDay}.${index + 1}`]: deleteField() 
-        })
-        notifySuccess("task successfully deleted!")
-        } catch(err) {
-        notifyError(err.message)
-        console.log(err.message)
+      const docRef = doc(db, "tasks", selectedDateDetails.selectedMonth);
+      try {
+          await updateDoc(docRef, {
+              [`${selectedDateDetails.selectedDay}.${index + 1}`]: deleteField() 
+          })
+          notifySuccess("task successfully deleted!")
+          } catch(err) {
+          notifyError(err.message)
+          console.log(err.message)
         }    
     }
 
 
     // EDIT EXISTING TASK
     const handleEditTask = async (month, day, taskKey, newTask) => {
-        const docRef = doc(db, "tasks", month);
-        try {
+      const docRef = doc(db, "tasks", month);
+      try {
           await updateDoc(docRef, {
             [`${day}.${taskKey}`]: newTask
           })
@@ -59,7 +59,7 @@ export const useFirestore = () => {
         } catch(err) {
           notifyError(err.message)
           console.log(err.message)
-        }
+      }
     }
 
   return {handleAddTask, handleDeleteTask, handleEditTask}
