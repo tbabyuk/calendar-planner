@@ -3,14 +3,14 @@ import "./TaskModal.css"
 
 import { doc, updateDoc } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react"
-import { db } from "../../firebase/config";
+import { db } from "../firebase/config";
 
 
-function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTaskModal}) {
+function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTaskModal, notifySuccess, notifyError}) {
 
   const inputRef = useRef()
   const [newTask, setNewTask] = useState("")
-  const [saveMessage, setSaveMessage] = useState("Save Task")
+  // const [saveMessage, setSaveMessage] = useState("Save Task")
 
 
   const handleCloseModal = (e) => {
@@ -19,24 +19,24 @@ function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTa
     }
   }
 
+  // add task
   const handleSaveTask = async () => {
-
     const docRef = doc(db, "tasks", month);
 
     try {
       await updateDoc(docRef, {
-        [`${day}.${numberOfCurrentTasks + 1}`]: newTask  
+        [`${day}.${numberOfCurrentTasks + 1}`]: newTask
       })
+      notifySuccess("task successfully added!")
 
     } catch(err) {
+      notifyError(err.message)
       console.log(err.message)
     }
     
-    setSaveMessage("New Task Saved!")
-
     setTimeout(() => {
       closeAddTaskModal()
-    }, 1000)
+    }, 500)
 
   }
 
@@ -51,7 +51,7 @@ function AddTaskModal({currentDate, numberOfCurrentTasks, month, day, closeAddTa
       <div className="day-modal-container">
         <small className="text-center">Adding task for <strong>{currentDate}</strong></small>
         <textarea type="text" value={newTask} onChange={e => setNewTask(e.target.value)} ref={inputRef} />
-        <button className="modal-btn" onClick={handleSaveTask}>{saveMessage}</button>
+        <button className="modal-btn" onClick={handleSaveTask}>Save Task</button>
       </div>
     </div>
   )

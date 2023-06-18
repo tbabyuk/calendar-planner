@@ -3,14 +3,13 @@ import styles from "./TaskModal.css"
 
 import { doc, updateDoc } from "firebase/firestore";
 import { useState, useEffect, useRef } from "react"
-import { db } from "../../firebase/config";
+import { db } from "../firebase/config";
 
-function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEditTaskModal}) {
+function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEditTaskModal, notifySuccess, notifyError}) {
 
   const inputRef = useRef()
   const [isBeingEdited, setIsBeingEdited] = useState(false)
   const [newTask, setNewTask] = useState(currentTask)
-  const [saveMessage, setSaveMessage] = useState("Save Task")
 
 
   const toggleEdit = () => {
@@ -31,21 +30,17 @@ function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEdit
       await updateDoc(docRef, {
         [`${day}.${taskKey}`]: newTask
       })
+      notifySuccess("task successfully updated!")
 
     } catch(err) {
+      notifyError(err.message)
       console.log(err.message)
     }
-
-    // updateDoc(docRef, {
-    //   [day]: arrayUnion(task)
-    // })
-    // .then(() => console.log("doc updated"))
     
-    setSaveMessage("New Task Saved!")
     setTimeout(() => {
       closeEditTaskModal()
       setIsBeingEdited(false)
-    }, 1000)
+    }, 500)
   }
 
   useEffect(() => {
@@ -61,7 +56,7 @@ function EditTaskModal({currentDate, currentTask, taskKey, month, day, closeEdit
         <button className="modal-btn" onClick={toggleEdit}>Edit Task</button>
         <small className="text-center">Editing task for <strong>{currentDate}</strong></small>
         <textarea type="text" value={isBeingEdited ? newTask : currentTask} onChange={e => setNewTask(e.target.value)} disabled={!isBeingEdited} ref={inputRef} />
-        <button className="modal-btn" disabled={!isBeingEdited} onClick={handleSaveTask}>{saveMessage}</button>
+        <button className="modal-btn" disabled={!isBeingEdited} onClick={handleSaveTask}>Save Task</button>
       </div>
     </div>
   )
