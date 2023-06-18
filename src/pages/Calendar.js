@@ -73,7 +73,7 @@ export const Calendar = () => {
       footer = <p>You picked {selectedDate}.</p>;
     }
 
-    const bookedStyle = {border: "2px solid orange"}
+    const bookedStyle = {border: "2px solid orange", background: "blue"}
     const selectedStyle = {background: "orange"}
 
     const closeEditTaskModal = () => {
